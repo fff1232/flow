@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/floating_population?useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    static-path-pattern=/image/**:server:
+  resources:
+    static-locations=file:D://image/:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  configuration:
+    #驼峰命名规则
+    map-underscore-to-camel-case: true
+server:
+  port: 8081
+baidu:
+  face:
+    appId: 27988888
+    apiKey: cpxKMAfIuzgu3yTv3jElOMVg
+    secretKey: z4EzGKdfaghd9qUroWdx6IQwZ9l97hTf
+    imageType: BASE64
+    groupId: test
