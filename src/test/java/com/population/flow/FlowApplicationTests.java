@@ -5,6 +5,7 @@ import com.population.flow.mapper.CollectionMapper;
 import com.population.flow.mapper.UserMapper;
 import com.population.flow.service.CollectionService;
 import com.population.flow.service.UserService;
+import com.population.flow.utils.WeatherUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ class FlowApplicationTests {
     UserService userService;
     @Test
     void test() {
+        System.out.println(WeatherUtil.getWerther("110.87.95.2"));
     }
 
     @Autowired

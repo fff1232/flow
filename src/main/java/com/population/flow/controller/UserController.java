@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public class UserController {
             user.setPhone(phone);
             user.setPassword(Base64Util.encryptBASE64(password.getBytes()));
             if (userService.save(user)){
-                return result.setCode(200).setMessage("注册成功");
+                return result.setCode(200).setMessage("注册成功").setData(user);
             }else {
                 return result.setCode(500).setMessage("注册失败");
             }
@@ -63,16 +62,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("/image")
-    public Result GetVerifiCode(HttpServletRequest request) throws IOException {
+    @PostMapping("/image")
+    public Result GetVerifiCode() throws IOException {
         ImageVerificationCode ivc = new ImageVerificationCode();     //用我们的验证码类，生成验证码类对象
         BufferedImage image = ivc.getImage();  //获取验证码
         Map<String, Object> texts = new HashMap<>();
         texts.put("text", ivc.getText());
-        request.getSession().setAttribute("text", ivc.getText()); //将验证码的文本存在session中
         ivc.output(image);//将验证码图片响应给客户端 指定地址
-//        OutputStream fos = new FileOutputStream("D://a.jpg");
-//        System.out.println(fos);
         String msg = texts != null ? "成功" : "数据查询失败请重试";
         return result.setCode(200).setMessage(msg);
     }
@@ -94,7 +90,7 @@ public class UserController {
         userWrapper.eq("username",user.getUsername());
         User one = userService.getOne(userWrapper);
         if (one!=null){
-            return new Result(200,"请求成功",one);
+            return new Result(200,"",one);
         }else {
             return new Result(500,"！错误",null);
         }

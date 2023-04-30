@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,8 +35,8 @@ public class SendCode {
     //验证码长度，范围4～10，默认为4
     private static final String CODELEN="6";
 
-    public static void main(String[] args) throws Exception {
-
+    public String getCode(String phone) throws Exception {
+        System.out.println(phone);
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(SERVER_URL);
         String curTime = String.valueOf((new Date()).getTime() / 1000L);
@@ -59,7 +60,7 @@ public class SendCode {
          * 3.params是根据你模板里面有几个参数，那里面的参数也是jsonArray格式
          */
         nvps.add(new BasicNameValuePair("templateid", TEMPLATEID));
-        nvps.add(new BasicNameValuePair("mobile", MOBILE));
+        nvps.add(new BasicNameValuePair("mobile", phone));
         nvps.add(new BasicNameValuePair("codeLen", CODELEN));
 
         httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
@@ -70,8 +71,9 @@ public class SendCode {
          * 1.打印执行结果，打印结果一般会200、315、403、404、413、414、500
          * 2.具体的code有问题的可以参考官网的Code状态表
          */
-        System.out.println(EntityUtils.toString(response.getEntity(), "utf-8"));
-
+        JSONObject jsonObj = new JSONObject(EntityUtils.toString(response.getEntity(), "utf-8"));
+        System.out.println(jsonObj);
+        return jsonObj.get("obj").toString();
     }
 }
 

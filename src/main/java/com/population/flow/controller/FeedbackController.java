@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
@@ -18,6 +21,9 @@ public class FeedbackController {
 
     @PostMapping("/submit")
     public Result Submit(Feedback feedback){
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        feedback.setDate(java.sql.Date.valueOf(formatter.format(date)));
         if (service.save(feedback)) {
             return new Result(200,"提交成功",null);
         }else {

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @RestController
 @RequestMapping("/vehicle")
 public class VehicleController {
@@ -18,6 +21,9 @@ public class VehicleController {
 
     @PostMapping("/register")
     public Result register(Vehicle vehicle){
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        vehicle.setDate(java.sql.Date.valueOf(formatter.format(date)));
         if (service.save(vehicle)){
             return new Result(200,"登记成功",null);
         }else {
@@ -30,6 +36,12 @@ public class VehicleController {
         QueryWrapper<Vehicle> queryWrapper = new QueryWrapper<Vehicle>().eq("username", username);
         return new Result(200,"",service.getOne(queryWrapper));
     }
+
+    @PostMapping("/getVehicle")
+    public Result getVehicle(String key){
+        return new Result(200,"",service.getVehicle(key));
+    }
+
 
     @GetMapping("/vehicle_list")
     public Result vehicle_list(){
