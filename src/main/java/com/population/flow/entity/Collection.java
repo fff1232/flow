@@ -14,6 +14,7 @@ public class Collection implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;
+    private Integer type;
     private String address;
     private String occupation;
     private String work;

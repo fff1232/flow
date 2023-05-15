@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,22 +44,27 @@ public class UserController {
     }
 
     @RequestMapping("/register")
-    public Result Register(String phone,String password){
-        User user = new User();
-        String username = RandomAccountUtil.randomDigitNumber(7);
-        QueryWrapper<User> wrapper=new QueryWrapper<>();
-        wrapper.eq("username",username);
-        if (userService.getOne(wrapper)==null){
-            user.setUsername(username);
-            user.setPhone(phone);
-            user.setPassword(Base64Util.encryptBASE64(password.getBytes()));
-            if (userService.save(user)){
-                return result.setCode(200).setMessage("注册成功").setData(user);
+    public Result Register(String phone, String password,String phoneCode, HttpServletRequest request){
+        String code = (String) request.getSession().getAttribute("phoneCode");
+        if (code.equalsIgnoreCase(phoneCode)){
+            User user = new User();
+            String username = RandomAccountUtil.randomDigitNumber(7);
+            QueryWrapper<User> wrapper=new QueryWrapper<>();
+            wrapper.eq("username",username);
+            if (userService.getOne(wrapper)==null){
+                user.setUsername(username);
+                user.setPhone(phone);
+                user.setPassword(Base64Util.encryptBASE64(password.getBytes()));
+                if (userService.save(user)){
+                    return result.setCode(200).setMessage("注册成功").setData(user);
+                }else {
+                    return result.setCode(500).setMessage("注册失败");
+                }
             }else {
-                return result.setCode(500).setMessage("注册失败");
+                return result.setCode(500).setMessage("账号已存在");
             }
         }else {
-            return result.setCode(500).setMessage("账号已存在");
+            return result.setCode(500).setMessage("手机验证码错误");
         }
     }
 

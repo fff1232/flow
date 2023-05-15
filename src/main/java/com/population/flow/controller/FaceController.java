@@ -43,9 +43,9 @@ public class FaceController {
     @PostMapping("/search")
     public Result search(String userId, String image){
         if (Objects.equals(baiduAiUtils.faceSearch(image), userId)){
-            return result.setCode(200).setMessage("对比成功");
+            return new Result().setCode(200).setMessage("对比成功");
         }else {
-            return result.setCode(500).setMessage("对比失败，请重新尝试");
+            return new Result().setCode(500).setMessage("对比失败，请重新尝试");
         }
     }
 

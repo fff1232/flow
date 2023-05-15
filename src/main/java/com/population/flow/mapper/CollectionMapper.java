@@ -16,4 +16,7 @@ public interface CollectionMapper extends BaseMapper<Collection> {
 
     @Select("select substring(date,6,2) as  'month',COUNT(date) as 'number' FROM collection GROUP BY substring(date,6,2) ORDER BY substring(date,6,2)")
     List<CollectionVo2> linechart_data();
+
+    @Select("SELECT * FROM collection  WHERE (YEAR(NOW())-YEAR(date)) > 4")
+    List<Collection> outdate();
 }

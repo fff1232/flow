@@ -1,5 +1,7 @@
 package com.population.flow.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.population.flow.entity.Collection;
 import com.population.flow.entity.Result;
 import com.population.flow.service.CollectionService;
@@ -17,10 +19,18 @@ public class CollectionController {
 
     @PostMapping("/register")
     public Result register(Collection collection){
-        if (service.save(collection)){
-            return new Result().setCode(200).setMessage("信息采集成功");
+        if (service.count(new QueryWrapper<Collection>().eq("username",collection.getUsername()))==0){
+            if (service.save(collection)){
+                return new Result().setCode(200).setMessage("信息采集成功");
+            }else {
+                return new Result().setCode(500).setMessage("服务器错误");
+            }
         }else {
-            return new Result().setCode(500).setMessage("服务器错误");
+            if (service.update(collection,new UpdateWrapper<Collection>().eq("username",collection.getUsername()))){
+                return new Result().setCode(200).setMessage("信息采集成功");
+            }else {
+                return new Result().setCode(500).setMessage("服务器错误");
+            }
         }
     }
 
@@ -37,6 +47,16 @@ public class CollectionController {
     @GetMapping("/getData")
     public Result getData(){
         return new Result(200,"",service.list());
+    }
+
+    @PostMapping("/update")
+    public Result upData(Collection collection){
+        return new Result(200,"修改成功",service.updateById(collection));
+    }
+
+    @PostMapping("/delete")
+    public Result delete(Collection collection){
+        return new Result(200,"删除成功",service.remove(new QueryWrapper<Collection>().eq("id",collection.getId())));
     }
 
 }
